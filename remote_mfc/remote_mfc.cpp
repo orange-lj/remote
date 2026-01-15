@@ -70,7 +70,8 @@ BOOL CremotemfcApp::InitInstance()
 	// TODO: 应适当修改该字符串，
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
-
+	WSADATA wsaData;
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
 	CremotemfcDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();

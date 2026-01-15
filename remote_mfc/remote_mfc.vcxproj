@@ -188,6 +188,7 @@
     <ClInclude Include="common\net\Listener.h" />
     <ClInclude Include="common\net\Sockapi.h" />
     <ClInclude Include="common\net\Tcplis.h" />
+    <ClInclude Include="CreatorDialog.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="ListenersManager.h" />
     <ClInclude Include="pch.h" />
@@ -199,6 +200,9 @@
     <ClInclude Include="TunnelHelpServer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="common\net\cotp.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="common\net\LisFacto.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -208,6 +212,7 @@
     <ClCompile Include="common\net\Tcplis.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="CreatorDialog.cpp" />
     <ClCompile Include="ListenersManager.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

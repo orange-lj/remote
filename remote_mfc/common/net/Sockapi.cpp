@@ -17,3 +17,29 @@ int SockApi::Socket(int domain, int type, int protocol, int& sockfd)
         return 0;
     }
 }
+
+int SockApi::Bind(int sockfd, const sockaddr* addr, int addrlen)
+{
+    int ret = bind(sockfd, addr, addrlen);
+
+    if (ret < 0){
+
+        return GetLastError();
+    }
+    else {
+    
+        return 0;
+    }
+}
+
+int SockApi::Listen(int sockfd, int backlog)
+{
+    listen(sockfd, backlog);
+    return 0;
+}
+
+int SockApi::Close(int fd)
+{
+    closesocket(fd);
+    return 0;
+}

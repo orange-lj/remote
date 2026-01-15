@@ -63,6 +63,9 @@
     <ClInclude Include="common\net\Sockapi.h">
       <Filter>common\net</Filter>
     </ClInclude>
+    <ClInclude Include="CreatorDialog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="remote_mfc.cpp">
@@ -87,6 +90,12 @@
       <Filter>common\net</Filter>
     </ClCompile>
     <ClCompile Include="common\net\Sockapi.cpp">
+      <Filter>common\net</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatorDialog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="common\net\cotp.cpp">
       <Filter>common\net</Filter>
     </ClCompile>
   </ItemGroup>

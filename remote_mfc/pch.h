@@ -10,5 +10,8 @@
 // 添加要在此处预编译的标头
 #include "framework.h"
 #include <memory>
+#include <vector>
+#include <map>
+#include <thread>
 
 #endif //PCH_H

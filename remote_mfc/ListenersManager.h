@@ -1,10 +1,13 @@
 ﻿#pragma once
 #include "afxdialogex.h"
+#include "remote_mfcDlg.h"
+#include "common/net/Listener.h"
 
+typedef std::tuple<CString, int, std::shared_ptr<Listener> > ListenerInfo;
 
 // ListenersManager 对话框
 class CremotemfcDlg;
-class ListenersManager : public CDialogEx
+class ListenersManager : public CDialogEx, public std::enable_shared_from_this<ListenersManager>
 {
 	DECLARE_DYNAMIC(ListenersManager)
 
@@ -22,4 +25,14 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedButton1();
+	//afx_msg void OnCbnSelchangeCombo1();
+	CComboBox m_pProtocol;
+	CEdit m_pPortEdit;
+	int Start(CString protocol, int port);
+private:
+	std::map<CString, ListenerInfo> m_listeners;
+	CString BuildKey(CString protocol, int port);
+	static void ListenThread(std::shared_ptr<ListenersManager> pSelf, std::shared_ptr<Listener> pListener);
 };

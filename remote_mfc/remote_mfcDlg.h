@@ -14,9 +14,6 @@ class CremotemfcDlg : public CDialogEx
 // 构造
 public:
 	CremotemfcDlg(CWnd* pParent = nullptr);	// 标准构造函数
-private:
-	std::shared_ptr<ListenersManager> m_pListenersManager;
-	std::shared_ptr<TunnelHelpServer> m_pTunnelHelpServer;
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_REMOTE_MFC_DIALOG };
@@ -37,6 +34,9 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 private:
+	std::vector<std::shared_ptr<ListenersManager>> m_vecListenersManager;
+
+	std::shared_ptr<TunnelHelpServer> m_pTunnelHelpServer;
 	CListCtrl m_CList_Online;
 	#define COLUMN_ONLINE_COUNT 7			// 在线列表的个数
 	int m_Column_Online_Width = 0;		// 在线列表宽度和
@@ -54,7 +54,11 @@ private:
 	
 	int		InitMyMenu();		// 初始化主页面上方菜单
 	int		InitList();			// 初始化list控件信息
+	int		InitTab();			// 初始化tab控件信息
 public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnOpenLisrenersDialog();
+	afx_msg void OnCreatorDialog();
+	std::shared_ptr<ListenersManager> GetListenersManager();
+	CTabCtrl tab;
 };

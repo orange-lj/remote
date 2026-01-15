@@ -7,6 +7,7 @@
 #include "remote_mfc.h"
 #include "remote_mfcDlg.h"
 #include "afxdialogex.h"
+#include "CreatorDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -54,7 +55,7 @@ CremotemfcDlg::CremotemfcDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_REMOTE_MFC_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	m_pListenersManager = std::make_shared<ListenersManager>(this);
+
 	m_pTunnelHelpServer = std::make_shared<TunnelHelpServer>(this);
 	m_pTunnelHelpServer->Start();
 	//m_pTunnelHelpServer = std::make_shared<TunnelHelpServer>(this);
@@ -64,6 +65,7 @@ void CremotemfcDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_CList_Online);
+	DDX_Control(pDX, IDC_TAB1, tab);
 }
 
 BEGIN_MESSAGE_MAP(CremotemfcDlg, CDialogEx)
@@ -72,6 +74,7 @@ BEGIN_MESSAGE_MAP(CremotemfcDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_WM_SIZE()
 	ON_COMMAND(ID_32772, &CremotemfcDlg::OnOpenLisrenersDialog)
+	ON_COMMAND(ID_32773, &CremotemfcDlg::OnCreatorDialog)
 END_MESSAGE_MAP()
 
 
@@ -110,7 +113,9 @@ BOOL CremotemfcDlg::OnInitDialog()
 	// 初始化菜单控件
 	InitMyMenu();	
 	// 初始化列表控件
-	InitList();			
+	InitList();		
+	// 初始化tab控件
+	InitTab();
 	//---------改变窗口大小触发动态调整-------|
 	CRect rect;
 	GetWindowRect(&rect);
@@ -204,38 +209,112 @@ int CremotemfcDlg::InitList()
 	return 0;
 }
 
+int CremotemfcDlg::InitTab()
+{
+	//tab.InsertItem(0, _T("事件"));
+	//tab.InsertItem(0, _T("监听"));
+	tab.InsertItem(0, _T("控制台"));
+
+	// 设置位置（放在 tab 区域内）
+	CRect rcTab;
+	tab.GetWindowRect(&rcTab);
+	ScreenToClient(&rcTab);
+
+	// 你可以根据实际需要调整偏移和大小
+	//rcTab.top += 30; // 下移一点，避免tab头部
+	//rcTab.bottom -= 5;
+	//rcTab.left += 5;
+	//rcTab.right -= 5;
+
+	tab.SetCurSel(0);
+	return 0;
+}
+
 
 
 void CremotemfcDlg::OnSize(UINT nType, int cx, int cy)
 {
-	double dcx = cx;     //对话框的总宽度
-	CDialogEx::OnSize(nType, cx, cy);
+	//double dcx = cx;     //对话框的总宽度
+	//CDialogEx::OnSize(nType, cx, cy);
 
-	if (SIZE_MINIMIZED == nType)//当窗口最小化避免大小为0造成崩溃直接返回
-		return;
+	//if (SIZE_MINIMIZED == nType)//当窗口最小化避免大小为0造成崩溃直接返回
+	//	return;
 
-	if (m_CList_Online.m_hWnd != NULL)
-	{
-		CRect rc;
-		rc.left = 1;			// 列表的左坐标
-		rc.top = 80;			// 列表的上坐标
-		rc.right = cx - 1;		// 列表的右坐标
-		rc.bottom = cy - 160;	// 列表的下坐标
-		m_CList_Online.MoveWindow(rc);
+	//if (m_CList_Online.m_hWnd != NULL)
+	//{
+	//	CRect rc;
+	//	rc.left = 1;			// 列表的左坐标
+	//	rc.top = 80;			// 列表的上坐标
+	//	rc.right = cx - 1;		// 列表的右坐标
+	//	rc.bottom = cy - 160;	// 列表的下坐标
+	//	m_CList_Online.MoveWindow(rc);
 
-		for (int i = 0; i < COLUMN_ONLINE_COUNT; i++) {     // 遍历每一个列
-			double dd = m_Column_Online_Data[i].nWidth;     // 得到当前列的宽度
-			dd /= m_Column_Online_Width;                    // 看一看当前宽度占总长度的几分之几
-			dd *= dcx;                                      // 用原来的长度乘以所占的几分之几得到当前的宽度
-			int lenth = dd;                                 // 转换为int 类型
-			m_CList_Online.SetColumnWidth(i, (lenth));      // 设置当前的宽度
-		}
-	}
+	//	for (int i = 0; i < COLUMN_ONLINE_COUNT; i++) {     // 遍历每一个列
+	//		double dd = m_Column_Online_Data[i].nWidth;     // 得到当前列的宽度
+	//		dd /= m_Column_Online_Width;                    // 看一看当前宽度占总长度的几分之几
+	//		dd *= dcx;                                      // 用原来的长度乘以所占的几分之几得到当前的宽度
+	//		int lenth = dd;                                 // 转换为int 类型
+	//		m_CList_Online.SetColumnWidth(i, (lenth));      // 设置当前的宽度
+	//	}
+	//}
 }
 
 
 void CremotemfcDlg::OnOpenLisrenersDialog()
 {
 	// TODO: 在此添加命令处理程序代码
-	MessageBoxA(0, 0, 0, 0);
+	// 创建新的 ListenersManager 实例
+	auto pListenersManager = std::make_shared<ListenersManager>(this);
+
+	// 创建对话框
+	if (!pListenersManager->Create(IDD_DIALOG1, &tab))
+	{
+		AfxMessageBox(_T("ListenersManager 创建失败！"));
+		return;
+	}
+
+	// 添加到管理列表
+	m_vecListenersManager.push_back(pListenersManager);
+
+	// 创建唯一的 tab 标题
+	int nIndex = m_vecListenersManager.size();
+	CString strTabTitle;
+	strTabTitle.Format(_T("监听器 %d"), nIndex);
+
+	// 插入新的 tab（插入到控制台tab之前）
+	int nInsertIndex = tab.GetItemCount(); // 在控制台tab之前插入
+	if (nInsertIndex < 0) nInsertIndex = 0;
+	tab.InsertItem(nInsertIndex, strTabTitle);
+
+	// 设置对话框的父窗口为 tab 控件
+	pListenersManager->SetParent(&tab);
+
+	// 设置对话框位置和大小
+	CRect rcTab;
+	tab.GetClientRect(&rcTab);
+	tab.AdjustRect(FALSE, &rcTab);
+
+	pListenersManager->MoveWindow(&rcTab);
+	pListenersManager->ShowWindow(SW_SHOW);
+
+	// 切换到新创建的 tab
+	tab.SetCurSel(nInsertIndex);
+}
+
+
+void CremotemfcDlg::OnCreatorDialog()
+{
+	// TODO: 在此添加命令处理程序代码
+	CreatorDialog dialog(this);
+	dialog.DoModal();
+}
+
+std::shared_ptr<ListenersManager> CremotemfcDlg::GetListenersManager()
+{
+	int nCurrentTab = tab.GetCurSel();
+	if (nCurrentTab >= 0 && nCurrentTab <= (int)m_vecListenersManager.size())
+	{
+		return m_vecListenersManager[nCurrentTab-1];
+	}
+	return nullptr;
 }

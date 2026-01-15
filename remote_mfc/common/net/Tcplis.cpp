@@ -19,7 +19,26 @@ int TcpLis::Start()
 		if (error)
 			break;
 
+		struct sockaddr_in addr = { 0 };
+		addr.sin_family = AF_INET;
+		addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		addr.sin_port = htons(_port);
 
+		error = SockApi::Bind(sockfd, (struct sockaddr*)&addr, sizeof(addr));
+		if (error)
+			break;
+
+		SockApi::Listen(sockfd, 10);
 	} while (0);
+
+	if (error)
+	{
+		if (sockfd != -1)
+			SockApi::Close(sockfd);
+
+		return error;
+	}
+
+	_listenSock = sockfd;
 	return 0;
 }
