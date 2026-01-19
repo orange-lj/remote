@@ -1,15 +1,18 @@
-#ifndef TCPCONN_H
-#define TCPCONN_H
-
+#pragma once
 #include "conn.h"
 
-class TcpConn: public Conn
-{
-public:
-    TcpConn();
-    virtual int Recv(char* buf, int bytesToRecv, int* pBytesRecved, uint64_t times = neosmart::WAIT_INFINITE);
-private:
-    int _sock
-};
+class TcpConn : public Conn {
 
-#endif // TCPCONN_H
+public:
+	TcpConn(int s);
+	TcpConn();
+	~TcpConn();
+	virtual int Connect(char* server, int port);
+	virtual void Close();
+	virtual int Recv(char* buf, int bytesToRecv, int* pBytesRecved, uint64_t times = neosmart::WAIT_INFINITE);
+	virtual int SockName(struct sockaddr* name, int* namelen);
+	virtual int Send(char* buf, int bytesToSend, int* pBytesSent);
+private:
+	int _sock;
+	std::mutex      m_relase_lock;
+};

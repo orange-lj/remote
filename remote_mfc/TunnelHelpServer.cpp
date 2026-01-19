@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "TunnelHelpServer.h"
-#include "common/net/LisFacto.h"
+#include "../common/net/LisFacto.h"
 
 TunnelHelpServer::TunnelHelpServer(CremotemfcDlg* pMainWindow)
 	: m_pMainWindow(pMainWindow),

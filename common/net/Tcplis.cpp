@@ -1,4 +1,5 @@
 #include "Tcplis.h"
+#include "Tcpconn.h"
 #include "Sockapi.h"
 TcpLis::TcpLis(int port)
 	:_port(port),
@@ -41,4 +42,20 @@ int TcpLis::Start()
 
 	_listenSock = sockfd;
 	return 0;
+}
+
+std::shared_ptr<Conn> TcpLis::Accept()
+{
+	int error;
+	int client;
+
+	error = SockApi::Accept(_listenSock, NULL, NULL, client);
+	if (error)
+	{
+		return nullptr;
+	}
+	else
+	{
+		return std::make_shared<TcpConn>(client);
+	}
 }

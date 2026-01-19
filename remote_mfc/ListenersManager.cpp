@@ -5,8 +5,10 @@
 #include "remote_mfc.h"
 #include "afxdialogex.h"
 #include "ListenersManager.h"
-#include "common/net/cotp.h"
-#include "common/net/LisFacto.h"
+#include "Service.h"
+#include "../common/net/cotp.h"
+#include "../common/net/LisFacto.h"
+#include "../common/net/conn.h"
 
 
 // ListenersManager 对话框
@@ -101,9 +103,34 @@ CString ListenersManager::BuildKey(CString protocol, int port)
 
 void ListenersManager::ListenThread(std::shared_ptr<ListenersManager> pSelf, std::shared_ptr<Listener> pListener)
 {
-	while (1) {
-		MessageBoxA(0, 0, 0, 0);
+	pSelf->ListenWorker(pListener);
+}
+
+void ListenersManager::ListenWorker(std::shared_ptr<Listener> pListener)
+{
+	while (true)
+	{
+		std::shared_ptr<Conn> pConn = pListener->Accept();
+		if (!pConn)
+		{
+			break;
+		}
+
+		std::thread t(&ServiceThread, shared_from_this(), pConn);
+		t.detach();
 	}
+}
+
+void ListenersManager::ServiceThread(std::shared_ptr<ListenersManager> pSelf, std::shared_ptr<Conn> pConn)
+{
+	pSelf->ServiceWorker(pConn);
+}
+
+void ListenersManager::ServiceWorker(std::shared_ptr<Conn> pConn)
+{
+	Service s(m_pMainDlg);
+	s.Run(pConn);
+	
 }
 
 

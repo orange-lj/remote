@@ -25,4 +25,6 @@ public:
 	afx_msg void OnBnClickedButton1();
 private:
 	bool saveFile(CString srcPath, CString newPath);
+public:
+	CEdit m_Edit;
 };

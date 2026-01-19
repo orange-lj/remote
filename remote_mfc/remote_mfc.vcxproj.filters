@@ -48,22 +48,64 @@
     <ClInclude Include="TunnelHelpServer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="common\net\LisFacto.h">
-      <Filter>common\net</Filter>
-    </ClInclude>
-    <ClInclude Include="common\net\Listener.h">
-      <Filter>common\net</Filter>
-    </ClInclude>
-    <ClInclude Include="common\net\cotp.h">
-      <Filter>common\net</Filter>
-    </ClInclude>
-    <ClInclude Include="common\net\Tcplis.h">
-      <Filter>common\net</Filter>
-    </ClInclude>
-    <ClInclude Include="common\net\Sockapi.h">
-      <Filter>common\net</Filter>
-    </ClInclude>
     <ClInclude Include="CreatorDialog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="OneTabDialog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginManage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FileBrowser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net\conn.h">
+      <Filter>common\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net\ConnFacto.h">
+      <Filter>common\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net\cotp.h">
+      <Filter>common\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net\LisFacto.h">
+      <Filter>common\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net\Listener.h">
+      <Filter>common\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net\pevents.h">
+      <Filter>common\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net\Sockapi.h">
+      <Filter>common\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net\Tcpconn.h">
+      <Filter>common\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net\Tcplis.h">
+      <Filter>common\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\bytearray.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\proto.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\utils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Service.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\packetresolve.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,20 +125,53 @@
     <ClCompile Include="TunnelHelpServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="common\net\LisFacto.cpp">
-      <Filter>common\net</Filter>
-    </ClCompile>
-    <ClCompile Include="common\net\Tcplis.cpp">
-      <Filter>common\net</Filter>
-    </ClCompile>
-    <ClCompile Include="common\net\Sockapi.cpp">
-      <Filter>common\net</Filter>
-    </ClCompile>
     <ClCompile Include="CreatorDialog.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="common\net\cotp.cpp">
+    <ClCompile Include="OneTabDialog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PluginManage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FileBrowser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net\conn.cpp">
       <Filter>common\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net\ConnFacto.cpp">
+      <Filter>common\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net\cotp.cpp">
+      <Filter>common\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net\LisFacto.cpp">
+      <Filter>common\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net\Sockapi.cpp">
+      <Filter>common\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net\Tcpconn.cpp">
+      <Filter>common\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net\Tcplis.cpp">
+      <Filter>common\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\bytearray.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Service.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\packetresolve.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +186,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\remote_mfc.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\icons\1.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

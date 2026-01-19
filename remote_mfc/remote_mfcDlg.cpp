@@ -55,7 +55,7 @@ CremotemfcDlg::CremotemfcDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_REMOTE_MFC_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-
+	
 	m_pTunnelHelpServer = std::make_shared<TunnelHelpServer>(this);
 	m_pTunnelHelpServer->Start();
 	//m_pTunnelHelpServer = std::make_shared<TunnelHelpServer>(this);
@@ -214,12 +214,18 @@ int CremotemfcDlg::InitTab()
 	//tab.InsertItem(0, _T("事件"));
 	//tab.InsertItem(0, _T("监听"));
 	tab.InsertItem(0, _T("控制台"));
+	m_OneTabDialog = new OneTabDialog();
+	m_OneTabDialog->Create(IDD_DIALOG3, &tab);
 
-	// 设置位置（放在 tab 区域内）
+	m_OneTabDialog->SetParent(&tab);
+
+	// 设置对话框位置和大小
 	CRect rcTab;
-	tab.GetWindowRect(&rcTab);
-	ScreenToClient(&rcTab);
+	tab.GetClientRect(&rcTab);
+	tab.AdjustRect(FALSE, &rcTab);
 
+	m_OneTabDialog->MoveWindow(&rcTab);
+	m_OneTabDialog->ShowWindow(SW_SHOW);
 	// 你可以根据实际需要调整偏移和大小
 	//rcTab.top += 30; // 下移一点，避免tab头部
 	//rcTab.bottom -= 5;
@@ -295,6 +301,20 @@ void CremotemfcDlg::OnOpenLisrenersDialog()
 	tab.AdjustRect(FALSE, &rcTab);
 
 	pListenersManager->MoveWindow(&rcTab);
+
+	// 隐藏其他页面
+	if (m_OneTabDialog)
+	{
+		m_OneTabDialog->ShowWindow(SW_HIDE);
+	}
+	for (auto& dlg : m_vecListenersManager)
+	{
+		if (dlg && dlg != pListenersManager)
+		{
+			dlg->ShowWindow(SW_HIDE);
+		}
+	}
+
 	pListenersManager->ShowWindow(SW_SHOW);
 
 	// 切换到新创建的 tab

@@ -6,8 +6,10 @@
 #include "PublicStructh.h"
 #include "ListenersManager.h"
 #include "TunnelHelpServer.h"
+#include "OneTabDialog.h"
 class ListenersManager;
 class TunnelHelpServer;
+class OneTabDialog;
 // CremotemfcDlg 对话框
 class CremotemfcDlg : public CDialogEx
 {
@@ -37,6 +39,7 @@ private:
 	std::vector<std::shared_ptr<ListenersManager>> m_vecListenersManager;
 
 	std::shared_ptr<TunnelHelpServer> m_pTunnelHelpServer;
+	OneTabDialog* m_OneTabDialog;
 	CListCtrl m_CList_Online;
 	#define COLUMN_ONLINE_COUNT 7			// 在线列表的个数
 	int m_Column_Online_Width = 0;		// 在线列表宽度和
