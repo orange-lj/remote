@@ -148,6 +148,11 @@ int SockApi::FreeAddrInfoWrap_x(addrinfo* res)
     return 0;
 }
 
+int SockApi::Shutdown(int sockfd)
+{
+    return 0;
+}
+
 int SockApi::Close(int fd)
 {
     closesocket(fd);
@@ -161,6 +166,18 @@ int SockApi::Getsockname(int sockfd, sockaddr* addr, int* addrlen)
         return GetLastError();
     }
     else
+    {
+        return 0;
+    }
+}
+
+int SockApi::Getpeername(int sockfd, sockaddr* addr, int* addrlen)
+{
+    if (getpeername(sockfd, addr, (socklen_t*)addrlen) < 0)
+    {
+        return GetLastError();
+    }
+    else 
     {
         return 0;
     }

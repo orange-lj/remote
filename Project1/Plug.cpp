@@ -57,7 +57,8 @@ void Plug::start()
 	}
 
 	pi->PlgLoad = PlgLoad;
-
+	pi->PlgSockName = PlgSockName;
+	pi->PlgSendAll = PlgSendAll;
 	DWORD op;
 
 	VirtualProtect(pi, sizeof(PLGFUNC), PAGE_READONLY, &op);

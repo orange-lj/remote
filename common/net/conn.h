@@ -12,4 +12,8 @@ public:
 	int SendAll(char* buf, int bytesToSend);
 	int RecvAll(char* buf, int bytesToRecv, uint64_t times = neosmart::WAIT_INFINITE);
 	virtual int SockName(struct sockaddr* name, int* namelen) = 0;
+	virtual int GetConnType() = 0;
+	std::string PeerIp();
+	virtual int PeerName(struct sockaddr* name, int* namelen) = 0;
+	virtual void CloseNotify() = 0;
 };

@@ -8,7 +8,11 @@
 #include "remote_mfcDlg.h"
 #include "afxdialogex.h"
 #include "CreatorDialog.h"
-
+#include <locale>
+#include <codecvt>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -55,7 +59,19 @@ CremotemfcDlg::CremotemfcDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_REMOTE_MFC_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	
+	WCHAR strTempW[MAX_PATH];
+	//得到文件名
+	GetModuleFileNameW(NULL, strTempW, MAX_PATH);
+	// 去掉文件名
+	WCHAR* pLastSlash = wcsrchr(strTempW, L'\\');
+	if (pLastSlash)
+	{
+		*pLastSlash = L'\0';
+	}
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+	std::wstring wstrDir(strTempW);
+	m_savePath = converter.to_bytes(strTempW) + "\\hlist.db";
+
 	m_pTunnelHelpServer = std::make_shared<TunnelHelpServer>(this);
 	m_pTunnelHelpServer->Start();
 	//m_pTunnelHelpServer = std::make_shared<TunnelHelpServer>(this);
@@ -75,10 +91,32 @@ BEGIN_MESSAGE_MAP(CremotemfcDlg, CDialogEx)
 	ON_WM_SIZE()
 	ON_COMMAND(ID_32772, &CremotemfcDlg::OnOpenLisrenersDialog)
 	ON_COMMAND(ID_32773, &CremotemfcDlg::OnCreatorDialog)
+	ON_REGISTERED_MESSAGE(WM_UPDATE_HOSTINFO_MSG, OnUpdateHostInfo)
 END_MESSAGE_MAP()
 
 
 // CremotemfcDlg 消息处理程序
+
+LRESULT CremotemfcDlg::OnUpdateHostInfo(WPARAM wParam, LPARAM lParam)
+{
+	UpdateHostInfoData* pData = (UpdateHostInfoData*)wParam;
+	if (pData)
+	{
+		try
+		{
+			RealUpdateHostInfo(pData->info);
+		}
+		catch (...)
+		{
+			// 异常处理
+			TRACE(_T("Exception in OnUpdateHostInfo\n"));
+		}
+
+		// 释放动态分配的内存
+		delete pData;
+	}
+	return 0;
+}
 
 BOOL CremotemfcDlg::OnInitDialog()
 {
@@ -175,6 +213,98 @@ HCURSOR CremotemfcDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CremotemfcDlg::saveDB()
+{
+	// 删除旧文件
+	DeleteFileA(m_savePath.c_str());
+	// 创建并写入文件
+	std::ofstream outFile(m_savePath, std::ios::out | std::ios::binary);
+	if (!outFile.is_open())
+	{
+		return;
+	}
+	// 构建数据
+	std::stringstream ss;
+
+	int nItemCount = m_CList_Online.GetItemCount();
+	for (int i = 0; i < nItemCount; i++)
+	{
+		// 从列表项构建HostInfo
+		HostInfo hostinfo = hostInfoFromItem(i);
+
+		// 添加到字符串流
+		ss << hostinfo.toString() << "\n";
+	}
+
+	// 写入文件
+	outFile << ss.str();
+	outFile.close();
+}
+
+
+HostInfo CremotemfcDlg::hostInfoFromItem(int nRowIndex)
+{
+	HostInfo hostinfo;
+
+	for (int i = 0; i < HostInfo::COUNT; i++)
+	{
+		CStringA cstrA(m_CList_Online.GetItemText(nRowIndex, i));
+		std::string str = cstrA.GetString();
+		hostinfo.set(i, str);
+	}
+	return hostinfo;
+}
+
+void CremotemfcDlg::UpdateRowColor(int nRowIndex, const HostInfo& hostinfo)
+{
+	std::string strOnline = hostinfo.get(HostInfo::ONLINE);
+
+	bool bOnline = false;
+	if (strOnline == HOST_STATUS_ONLINE) {
+
+		bOnline = true;
+	}
+	//for (int i = 0; i < HostInfo::COUNT; i++)
+	//{
+		if (bOnline)
+		{
+			m_CList_Online.SetTextColor(RGB(0, 0, 255));      // 蓝色
+		}
+		else
+		{
+			m_CList_Online.SetTextColor(RGB(128, 128, 128));  // 灰色
+		}
+	//}
+}
+
+bool CremotemfcDlg::AddNewRow(const HostInfo& hostinfo)
+{
+	if (!m_CList_Online.GetSafeHwnd())
+		return false;
+
+	// 1. 先插入一个空行（选择插入位置）
+	int nInsertPos = 0;  // 插入到第一行，保持最新在最上面
+	// 或者插入到最后：int nInsertPos = m_CList_Online.GetItemCount();
+
+	// 插入行，并设置第一列的数据
+	std::string strFirstCol = hostinfo.get(HostInfo::HOSTID);
+	int nNewRow = m_CList_Online.InsertItem(nInsertPos, CString(strFirstCol.c_str()));
+
+	if (nNewRow < 0)
+		return false;
+
+	// 2. 设置其他列的数据（从第1列开始，因为第0列已经在InsertItem中设置了）
+	for (int j = 1; j < HostInfo::COUNT; j++)
+	{
+		CString strValue(hostinfo.get(j).c_str());
+		m_CList_Online.SetItemText(nNewRow, j, strValue);
+	}
+
+	// 3. 设置行颜色
+	UpdateRowColor(nNewRow, hostinfo);
+	return true;
+}
+
 int CremotemfcDlg::InitMyMenu()
 {
 	HMENU hmenu;
@@ -234,6 +364,44 @@ int CremotemfcDlg::InitTab()
 
 	tab.SetCurSel(0);
 	return 0;
+}
+
+void CremotemfcDlg::RealUpdateHostInfo(const HostInfo& hostinfo)
+{
+	// 检查控件是否有效
+	if (!m_CList_Online.GetSafeHwnd())
+		return;
+
+	bool bFound = false;
+	int nItemCount = m_CList_Online.GetItemCount();
+
+	std::string strSessionID = hostinfo.get(HostInfo::SESSIONID);
+	CString cstrSessionID(strSessionID.c_str());  // 转换为CString
+	for (int i = 0; i < nItemCount; i++)
+	{
+		CString strItemSession = m_CList_Online.GetItemText(i, 1); // 假设sessionid在第1列
+		if (strItemSession == cstrSessionID)
+		{
+			// 更新已存在的行
+			for (int j = 0; j < HostInfo::COUNT; j++) {
+				
+				// 将std::string转换为CString
+				CString strValue(hostinfo.get(j).c_str());
+				// 使用SetItemText设置每个单元格的内容
+				m_CList_Online.SetItemText(i, j, strValue);
+			}
+			UpdateRowColor(i, hostinfo);
+			bFound = true;
+			break;
+		}
+	}
+	// 如果没找到，添加新行
+	if (!bFound)
+	{
+		AddNewRow(hostinfo);
+	}
+
+	saveDB();
 }
 
 
@@ -338,3 +506,55 @@ std::shared_ptr<ListenersManager> CremotemfcDlg::GetListenersManager()
 	}
 	return nullptr;
 }
+
+std::shared_ptr<Manager> CremotemfcDlg::RegistManageServer(std::string sid, std::shared_ptr<Manager> pManager)
+{
+	std::lock_guard<std::mutex> guard(m_resourceLock);
+	std::shared_ptr<Manager> pPrev;
+	auto iter = m_manageServers.find(sid);
+	if (iter != m_manageServers.end())
+	{
+		pPrev = iter->second;
+	}
+	m_manageServers[sid] = pManager;
+	return pPrev;
+}
+
+void CremotemfcDlg::UpdateHostInfo(const HostInfo& hostinfo)
+{
+	// 获取主窗口线程ID
+	DWORD dwMainThreadId = 0;
+	if (AfxGetApp() && AfxGetApp()->m_pMainWnd)
+	{
+		//dwMainThreadId = AfxGetApp()->m_pMainWnd->GetWindowThreadProcessId();
+	}
+
+	// 获取当前线程ID
+	DWORD dwCurrentThreadId = ::GetCurrentThreadId();
+
+	// 如果在主线程，直接处理
+	if (dwCurrentThreadId == dwMainThreadId)
+	{
+		RealUpdateHostInfo(hostinfo);
+	}
+	else
+	{
+		// 在非主线程，发送消息到主线程
+		// 动态分配数据，确保生命周期跨线程
+		UpdateHostInfoData* pData = new UpdateHostInfoData;
+		pData->info = hostinfo;
+
+		// 使用PostMessage异步发送，不阻塞工作线程
+		if (GetSafeHwnd() != NULL)
+		{
+			::PostMessage(GetSafeHwnd(), WM_UPDATE_HOSTINFO_MSG,
+				(WPARAM)pData, 0);
+		}
+		else
+		{
+			// 如果窗口句柄无效，清理内存
+			delete pData;
+		}
+	}
+}
+

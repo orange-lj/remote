@@ -27,7 +27,10 @@ private:
 	{
 		return ((Conn*)con)->SockName(name, namelen);
 	}
-
+	static int WINAPI PlgSendAll(HANDLE con, char* buf, int bytesToSend)
+	{
+		return ((Conn*)con)->SendAll(buf, bytesToSend);
+	}
 public:
 	void start();
 	static Plug* GetInstance();

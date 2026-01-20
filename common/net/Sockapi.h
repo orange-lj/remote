@@ -15,6 +15,8 @@ namespace SockApi {
 	int Recv(int sockfd, void* buf, int len, int& bytesRead);
 	int GetAddrInfo_x(const char* node, const char* service, const struct addrinfo* hints, struct addrinfo** res);
 	int FreeAddrInfoWrap_x(struct addrinfo* res);
+	int Shutdown(int sockfd);
 	int Close(int fd);
 	int Getsockname(int sockfd, struct sockaddr* addr, int* addrlen);
+	int Getpeername(int sockfd, struct sockaddr* addr, int* addrlen);
 }

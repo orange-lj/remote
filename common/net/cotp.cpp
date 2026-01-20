@@ -10,3 +10,14 @@ int ConnTypeFromStr(const char* type)
     }
     return 0;
 }
+
+const char* ConnTypeToStr(int connType)
+{
+    switch (connType)
+    {
+    case CONN_TYPE_TCP:
+        return "tcp";
+    default:
+        return "unkown";
+    }
+}

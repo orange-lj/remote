@@ -38,3 +38,16 @@ protected:
 
 
 std::string UtGetOnlineInfo(std::string lanip);
+std::string UtGetId();
+DWORD GetClassId();
+BOOL RegGetData(HKEY hroot, const wchar_t* path, const wchar_t* name, PBYTE data, int size, int& cb);
+BOOL RegSetData(HKEY hroot, const wchar_t* path, const wchar_t* name, PBYTE data, int size, DWORD dwtype);
+DWORD getRandom();
+std::string UtGetSid();
+std::string UtGetPid();
+std::string UtGetHostName();
+std::string UtGetUserName();
+std::string UtGetOs();
+BOOL IsWow64();
+std::string UtOsType();
+std::string UtOsBits();

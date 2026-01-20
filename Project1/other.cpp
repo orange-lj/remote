@@ -1,5 +1,5 @@
 #include "other.h"
-
+#include <iostream>
 CPlgOhter::CPlgOhter()
 {
 
@@ -47,7 +47,18 @@ int CPlgOhter::OnOnlineInfo(HANDLE con, PACKET_HEADER* pkt)
 	GetPlgMap()->PlgSockName(con, (struct sockaddr*)&clientAddr, &namelen);
 
 	std::string info = UtGetOnlineInfo(inet_ntoa(clientAddr.sin_addr));
-	return 0;
+	pkt->length = info.length();
+
+	if (error = GetPlgMap()->PlgSendAll(con, (char*)pkt, sizeof(PACKET_HEADER)))
+	{
+		return error;
+	}
+	if (error = GetPlgMap()->PlgSendAll(con, (char*)info.c_str(), info.length()))
+	{
+		return error;
+	}
+
+	return error;
 }
 
 PLGFUNC* CPlgOhter::GetPlgMap()

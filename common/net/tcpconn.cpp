@@ -116,3 +116,18 @@ int TcpConn::Send(char* buf, int bytesToSend, int* pBytesSent)
 {
     return SockApi::Send(_sock, buf, bytesToSend, *pBytesSent);
 }
+
+int TcpConn::GetConnType()
+{
+    return CONN_TYPE_TCP;
+}
+
+int TcpConn::PeerName(sockaddr* name, int* namelen)
+{
+    return SockApi::Getpeername(_sock, name, namelen);
+}
+
+void TcpConn::CloseNotify()
+{
+    SockApi::Shutdown(_sock);
+}

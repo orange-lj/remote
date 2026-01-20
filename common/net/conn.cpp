@@ -1,5 +1,5 @@
 #include "conn.h"
-
+#include "Sockapi.h"
 int Conn::SendAll(char* buf, int bytesToSend)
 {
 	int left = bytesToSend;
@@ -43,4 +43,15 @@ int Conn::RecvAll(char* buf, int bytesToRecv, uint64_t times)
 	}
 
 	return error;
+}
+
+std::string Conn::PeerIp()
+{
+	struct sockaddr_in addr = { 0 };
+	int len = sizeof(addr);
+
+	PeerName((struct sockaddr*)&addr, &len);
+
+	std::string ip = inet_ntoa(addr.sin_addr);
+	return ip;
 }
