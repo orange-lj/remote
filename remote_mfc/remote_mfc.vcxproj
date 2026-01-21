@@ -206,7 +206,6 @@
     <ClInclude Include="Manager.h" />
     <ClInclude Include="OneTabDialog.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PluginManage.h" />
     <ClInclude Include="PluginManager.h" />
     <ClInclude Include="PublicStructh.h" />
     <ClInclude Include="remote_mfc.h" />
@@ -214,6 +213,8 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TaskCallback.h" />
+    <ClInclude Include="TaskEngine.h" />
     <ClInclude Include="TunnelHelpServer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -257,11 +258,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PluginManage.cpp" />
     <ClCompile Include="PluginManager.cpp" />
     <ClCompile Include="remote_mfc.cpp" />
     <ClCompile Include="remote_mfcDlg.cpp" />
     <ClCompile Include="Service.cpp" />
+    <ClCompile Include="TaskCallback.cpp" />
+    <ClCompile Include="TaskEngine.cpp" />
     <ClCompile Include="TunnelHelpServer.cpp" />
   </ItemGroup>
   <ItemGroup>

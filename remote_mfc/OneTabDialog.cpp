@@ -6,33 +6,31 @@
 #include "afxdialogex.h"
 #include "OneTabDialog.h"
 #include "FileBrowser.h"
-#include "PluginManage.h"
+#include "PluginManager.h"
 
 // OneTabDialog 对话框
 
 IMPLEMENT_DYNAMIC(OneTabDialog, CDialogEx)
 
 OneTabDialog::OneTabDialog(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_DIALOG3, pParent)
-	, m_pPluginManage(nullptr)
-	, m_pFileBrowser(nullptr)
+	: CDialogEx(IDD_DIALOG3, pParent),
+	m_pPluginManager(nullptr)
 {
-	
 }
 
 OneTabDialog::~OneTabDialog()
 {
 	// 释放子对话框内存
-	if (m_pPluginManage)
+	if (m_pPluginManager)
 	{
-		delete m_pPluginManage;
-		m_pPluginManage = nullptr;
+		delete m_pPluginManager;
+		m_pPluginManager = nullptr;
 	}
-	if (m_pFileBrowser)
+	/*if (m_pFileBrowser)
 	{
 		delete m_pFileBrowser;
 		m_pFileBrowser = nullptr;
-	}
+	}*/
 }
 
 void OneTabDialog::DoDataExchange(CDataExchange* pDX)
@@ -45,7 +43,7 @@ BOOL OneTabDialog::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 	m_tabImg.Create(24, 24, ILC_COLOR32 | ILC_MASK, 3, 3);
-	m_tabImg.Add(AfxGetApp()->LoadIcon(IDI_ICON3));
+	//m_tabImg.Add(AfxGetApp()->LoadIcon(IDI_ICON3));
 	m_tabImg.Add(AfxGetApp()->LoadIcon(IDI_ICON3));
 
 	m_funcTab.SetImageList(&m_tabImg);
@@ -55,7 +53,7 @@ BOOL OneTabDialog::OnInitDialog()
 	item.mask = TCIF_IMAGE;
 
 	item.iImage = 0; m_funcTab.InsertItem(0, &item);
-	item.iImage = 1; m_funcTab.InsertItem(1, &item);
+	//item.iImage = 1; m_funcTab.InsertItem(1, &item);
 
 	// 获取对话框客户区大小
 	CRect rc;
@@ -70,17 +68,17 @@ BOOL OneTabDialog::OnInitDialog()
 	m_funcTab.AdjustRect(FALSE, &rc);
 
 	// 创建子对话框并设置到调整后的区域
-	m_pPluginManage = new PluginManage();
-	m_pPluginManage->Create(IDD_DIALOG4, &m_funcTab);
-	m_pPluginManage->MoveWindow(&rc);
+	m_pPluginManager = new PluginManager(m_hostinfo, m_pMainWindow);
+	//m_pPluginManager->Create(IDD_DIALOG4, &m_funcTab);
+	//m_pPluginManage->MoveWindow(&rc);
 
 	m_pFileBrowser = new FileBrowser();
 	m_pFileBrowser->Create(IDD_DIALOG5, &m_funcTab);
 	m_pFileBrowser->MoveWindow(&rc);
 
 	// 默认显示第一个
-	m_pPluginManage->ShowWindow(SW_SHOW);
-	m_pFileBrowser->ShowWindow(SW_HIDE);
+	//m_pPluginManage->ShowWindow(SW_SHOW);
+	m_pFileBrowser->ShowWindow(SW_SHOW);
 	return 0;
 }
 
@@ -98,8 +96,8 @@ void OneTabDialog::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
 	int idx = m_funcTab.GetCurSel();
 	
 	// 根据索引显示/隐藏对应的子对话框
-	if (m_pPluginManage)
-		m_pPluginManage->ShowWindow(idx == 0 ? SW_SHOW : SW_HIDE);
+	/*if (m_pPluginManage)
+		m_pPluginManage->ShowWindow(idx == 0 ? SW_SHOW : SW_HIDE);*/
 	if (m_pFileBrowser)
 		m_pFileBrowser->ShowWindow(idx == 1 ? SW_SHOW : SW_HIDE);
 	

@@ -8,6 +8,7 @@
 #include "TunnelHelpServer.h"
 #include "OneTabDialog.h"
 #include "Manager.h"
+#include "TaskEngine.h"
 //#include "TaskE"
 #include <Map>
 
@@ -21,6 +22,7 @@ class ListenersManager;
 class TunnelHelpServer;
 class OneTabDialog;
 class Manager;
+class TaskEngine;
 // CremotemfcDlg 对话框
 class CremotemfcDlg : public CDialogEx
 {
@@ -98,4 +100,6 @@ public:
 	CTabCtrl tab;
 	// 更新接口 - 可以从任何线程调用
 	void UpdateHostInfo(const HostInfo& hostinfo);
+	TaskEngine* GetTaskEngine();
+	std::shared_ptr<Manager> GetManager(std::string sid);
 };

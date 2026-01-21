@@ -1,5 +1,6 @@
 #pragma once
 #include "../common/net/conn.h"
+#include "../common/proto.h"
 #include "HostInfo.h"
 #include "remote_mfcDlg.h"
 #include<thread>
@@ -13,6 +14,7 @@ public:
 
 	void Run();
 	void Disconnect();
+	void Write(std::string& packet);
 private:
 	int RequestHostinfo();
 	static void WriteThread(std::shared_ptr<Manager> pSelf);

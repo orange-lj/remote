@@ -1,11 +1,12 @@
 ﻿#pragma once
 #include "afxdialogex.h"
-#include "PluginManage.h"
+#include "PluginManager.h"
 #include "FileBrowser.h"
-
-
+#include "HostInfo.h"
+#include "remote_mfcDlg.h"
 // OneTabDialog 对话框
-
+class CremotemfcDlg;
+class PluginManager;
 class OneTabDialog : public CDialogEx
 {
 	DECLARE_DYNAMIC(OneTabDialog)
@@ -27,8 +28,10 @@ public:
 	CTabCtrl m_funcTab;
 	CImageList m_tabImg;
 	
+	HostInfo m_hostinfo;
+	CremotemfcDlg* m_pMainWindow;
 	// 子对话框指针
-	PluginManage* m_pPluginManage;
+	PluginManager* m_pPluginManager;
 	FileBrowser* m_pFileBrowser;
 	
 	virtual BOOL OnInitDialog();

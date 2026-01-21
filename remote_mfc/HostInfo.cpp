@@ -6,6 +6,11 @@ HostInfo::HostInfo()
 
 }
 
+std::string HostInfo::getSid()
+{
+    return m_values[HostInfo::SESSIONID];
+}
+
 std::string HostInfo::get(int col) const
 {
     if (col < 0 || col >= COUNT)

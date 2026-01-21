@@ -71,7 +71,7 @@ CremotemfcDlg::CremotemfcDlg(CWnd* pParent /*=nullptr*/)
 	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 	std::wstring wstrDir(strTempW);
 	m_savePath = converter.to_bytes(strTempW) + "\\hlist.db";
-
+	m_pTaskEngine = new TaskEngine(this);
 	m_pTunnelHelpServer = std::make_shared<TunnelHelpServer>(this);
 	m_pTunnelHelpServer->Start();
 	//m_pTunnelHelpServer = std::make_shared<TunnelHelpServer>(this);
@@ -555,6 +555,26 @@ void CremotemfcDlg::UpdateHostInfo(const HostInfo& hostinfo)
 			// 如果窗口句柄无效，清理内存
 			delete pData;
 		}
+	}
+}
+
+TaskEngine* CremotemfcDlg::GetTaskEngine()
+{
+	return m_pTaskEngine;
+}
+
+std::shared_ptr<Manager> CremotemfcDlg::GetManager(std::string sid)
+{
+	std::lock_guard<std::mutex> guard(m_resourceLock);
+
+	auto iter = m_manageServers.find(sid);
+	if (iter == m_manageServers.end())
+	{
+		return std::shared_ptr<Manager>();
+	}
+	else
+	{
+		return iter->second;  // 注意这里用 ->second 而不是 .value()
 	}
 }
 

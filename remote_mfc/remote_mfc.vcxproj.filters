@@ -54,9 +54,6 @@
     <ClInclude Include="OneTabDialog.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PluginManage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="FileBrowser.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -114,6 +111,12 @@
     <ClInclude Include="PluginManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="TaskEngine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCallback.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="remote_mfc.cpp">
@@ -135,9 +138,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="OneTabDialog.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PluginManage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="FileBrowser.cpp">
@@ -183,6 +183,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="PluginManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskEngine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskCallback.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

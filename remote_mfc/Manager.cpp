@@ -61,6 +61,19 @@ void Manager::Disconnect()
     m_pConn->Close();
 }
 
+void Manager::Write(std::string& packet)
+{
+    std::lock_guard<std::mutex> guard(m_lock);
+
+    if (m_writeQueue.size() > 1000)
+    {
+        //remove old packet
+        m_writeQueue.pop();
+    }
+
+    m_writeQueue.push(packet);
+}
+
 int Manager::RequestHostinfo()
 {
     int error = 0;

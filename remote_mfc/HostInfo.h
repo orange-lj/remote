@@ -26,6 +26,7 @@ public:
     };
     HostInfo(std::string hostid, std::string sid, std::string lan, std::string wan, std::string hostname, std::string pid, std::string username, std::string os, std::string osType, std::string osArch, std::string lastTime, std::string online, std::string protocol);
     HostInfo();
+    std::string getSid();
     std::string get(int col) const;
     void set(int col, std::string value);
     std::string toString();
