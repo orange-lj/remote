@@ -19,3 +19,7 @@ typedef struct PacketHeder
 #define CMD_INFO                    0x00000101
 #define CMD_PLUGIN_LOAD             0x00000103
 #define CMD_SUB_CONN                0x0000010d
+
+
+#define CMD_PLUGIN_FILE             0x00000002
+#define CMD_PLUGIN_FILE_DISK        0x00000201

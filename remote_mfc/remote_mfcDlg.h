@@ -23,6 +23,7 @@ class TunnelHelpServer;
 class OneTabDialog;
 class Manager;
 class TaskEngine;
+class PluginManager;
 // CremotemfcDlg 对话框
 class CremotemfcDlg : public CDialogEx
 {
@@ -91,7 +92,11 @@ private:
 		HostInfo info;
 	};
 	TaskEngine* m_pTaskEngine;
+	PluginManager* m_pPluginManager;
+	
+	std::map<CString, std::string> m_descriptions;
 public:
+	HostInfo m_hostinfo;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnOpenLisrenersDialog();
 	afx_msg void OnCreatorDialog();
@@ -101,5 +106,9 @@ public:
 	// 更新接口 - 可以从任何线程调用
 	void UpdateHostInfo(const HostInfo& hostinfo);
 	TaskEngine* GetTaskEngine();
+	OneTabDialog* GetOneTabDialog();
 	std::shared_ptr<Manager> GetManager(std::string sid);
+	void LoadAllPlugins(HostInfo hostinfo);
+	CString getPluginRootPath();
+	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
 };

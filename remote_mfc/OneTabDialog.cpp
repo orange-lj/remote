@@ -12,20 +12,22 @@
 
 IMPLEMENT_DYNAMIC(OneTabDialog, CDialogEx)
 
-OneTabDialog::OneTabDialog(CWnd* pParent /*=nullptr*/)
+OneTabDialog::OneTabDialog(CremotemfcDlg* pMainDlg,TaskEngine* pTaskEngine, CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG3, pParent),
-	m_pPluginManager(nullptr)
+	m_pFileBrowser(nullptr),
+	m_pMainWindow(pMainDlg),
+	m_OneDialogEngine(pTaskEngine)
 {
 }
 
 OneTabDialog::~OneTabDialog()
 {
 	// 释放子对话框内存
-	if (m_pPluginManager)
+	/*if (m_pPluginManager)
 	{
 		delete m_pPluginManager;
 		m_pPluginManager = nullptr;
-	}
+	}*/
 	/*if (m_pFileBrowser)
 	{
 		delete m_pFileBrowser;
@@ -68,11 +70,11 @@ BOOL OneTabDialog::OnInitDialog()
 	m_funcTab.AdjustRect(FALSE, &rc);
 
 	// 创建子对话框并设置到调整后的区域
-	m_pPluginManager = new PluginManager(m_hostinfo, m_pMainWindow);
+	//m_pPluginManager = new PluginManager(m_hostinfo, m_pMainWindow);
 	//m_pPluginManager->Create(IDD_DIALOG4, &m_funcTab);
 	//m_pPluginManage->MoveWindow(&rc);
 
-	m_pFileBrowser = new FileBrowser();
+	m_pFileBrowser = new FileBrowser(this->m_OneDialogEngine);
 	m_pFileBrowser->Create(IDD_DIALOG5, &m_funcTab);
 	m_pFileBrowser->MoveWindow(&rc);
 

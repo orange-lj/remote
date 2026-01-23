@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "../common/proto.h"
 #include "remote_mfcDlg.h"
+#include "FileBrowser.h"
 TaskEngine::TaskEngine(CremotemfcDlg* pMainWindow)
 	:m_pMainWindow(pMainWindow),
 	m_tidCounter(10)
@@ -91,4 +92,32 @@ int TaskEngine::AddTask(std::string sid, uint64_t tid, ByteArray packet, TaskCal
 	}
 
 	return 0;
+}
+
+void TaskEngine::execTask(uint64_t tid, int error, uint32_t command, const std::any& replyData)
+{
+	MyEvent event(false, true);
+	uint32_t ret = 0;
+	auto* msg = new ExecTaskMsg{
+		tid,
+		error,
+		command,
+		replyData,
+		&event,
+		&ret
+	};
+	// 投递到 GUI 线程
+	m_pMainWindow->GetOneTabDialog()->m_pFileBrowser->PostMessage(WM_EXEC_TASK, 0, (LPARAM)msg);
+	event.wait();
+}
+
+int TaskEngine::fileDiskList(std::string sid, TaskCallback* pCallback)
+{
+	uint64_t tid;
+	ByteArray emptyData;
+	ByteArray packet = buildPacket(sid, CMD_PLUGIN_FILE_DISK, emptyData, tid);
+
+	std::vector<CString> savedArgs;
+
+	return AddTask(sid, tid, packet, pCallback, savedArgs);
 }

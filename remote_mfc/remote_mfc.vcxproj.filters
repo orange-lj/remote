@@ -117,6 +117,9 @@
     <ClInclude Include="TaskCallback.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="MyEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="remote_mfc.cpp">
@@ -189,6 +192,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="TaskCallback.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyEvent.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

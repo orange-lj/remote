@@ -18,10 +18,12 @@
 #define IDI_ICON3                       148
 #define IDC_LIST1                       1001
 #define IDC_EDIT1                       1002
+#define IDC_LIST2                       1002
 #define IDC_BUTTON1                     1004
 #define IDC_TAB1                        1005
 #define IDC_BUTTON2                     1006
 #define IDC_COMBO1                      1007
+#define IDC_COMBO2                      1008
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773

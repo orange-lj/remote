@@ -8,6 +8,7 @@
 
 Manager::Manager(CremotemfcDlg* pMainWindow, std::shared_ptr<Conn> pConn)
     : m_pConn(pConn),
+    m_bStopWrite(false),
     m_pMainWindow(pMainWindow)
 {
 
@@ -33,6 +34,8 @@ void Manager::Run()
         pPrev->Disconnect();
     }
     m_pMainWindow->UpdateHostInfo(m_hostinfo);
+
+    m_pMainWindow->LoadAllPlugins(m_hostinfo);
 
     m_writeThread = std::thread(WriteThread, shared_from_this());
 
@@ -154,5 +157,39 @@ void Manager::WriterWorker()
 
 int Manager::ProcessPacket(PACKET_HEADER* pHeader, std::string& data)
 {
+    switch (pHeader->cmd)
+    {
+    case CMD_PLUGIN_FILE_DISK:
+        ProcessPluginFileDisk(pHeader, data);
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+
+int Manager::ProcessPluginFileDisk(PACKET_HEADER* pHeader, std::string& data)
+{
+    if (data.length() % 2 != 0)
+    {
+        //invalid data
+        return 0;
+    }
+
+    std::vector<std::pair<CString, int>> disks;
+
+    for (size_t i = 0; i < data.size(); i += 2)
+    {
+        unsigned char diskLetter = static_cast<unsigned char>(data[i]);
+        unsigned char diskType = static_cast<unsigned char>(data[i + 1]);
+
+        CString diskName;
+        diskName.Format(_T("%c:"), diskLetter);
+
+        disks.emplace_back(diskName, static_cast<int>(diskType));
+    }
+
+    // 回调 / 任务派发
+    m_pMainWindow->GetTaskEngine()->execTask(pHeader->id,pHeader->error,pHeader->cmd,disks);
     return 0;
 }

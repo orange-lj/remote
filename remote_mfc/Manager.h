@@ -20,6 +20,7 @@ private:
 	static void WriteThread(std::shared_ptr<Manager> pSelf);
 	void WriterWorker();
 	int ProcessPacket(PACKET_HEADER* pHeader, std::string& data);
+	int ProcessPluginFileDisk(PACKET_HEADER* pHeader, std::string& data);
 private:
 	CremotemfcDlg* m_pMainWindow;
 	std::shared_ptr<Conn> m_pConn;

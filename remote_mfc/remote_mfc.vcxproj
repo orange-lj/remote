@@ -94,6 +94,7 @@
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -204,6 +205,7 @@
     <ClInclude Include="HostInfo.h" />
     <ClInclude Include="ListenersManager.h" />
     <ClInclude Include="Manager.h" />
+    <ClInclude Include="MyEvent.h" />
     <ClInclude Include="OneTabDialog.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PluginManager.h" />
@@ -251,6 +253,7 @@
     <ClCompile Include="HostInfo.cpp" />
     <ClCompile Include="ListenersManager.cpp" />
     <ClCompile Include="Manager.cpp" />
+    <ClCompile Include="MyEvent.cpp" />
     <ClCompile Include="OneTabDialog.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
